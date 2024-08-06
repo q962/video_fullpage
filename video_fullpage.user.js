@@ -187,13 +187,10 @@ function do_full(target){
 function try_iframe(){
   let playing_href = GM_getValue("playing_href");
 
-  let all_iframes = document.querySelectorAll("iframe");
-  for(let i=0;i<all_iframes.length;i++){
-    let frame = all_iframes[i];
-
-    if( playing_href == frame.src ) {
-      return frame;
-    }
+  for(let win_index=0; window.top[win_index]; win_index++){
+    let win = window.top[win_index];
+    if( win.____playing )
+      return win.frameElement;
   }
 }
 
@@ -244,8 +241,8 @@ GM_registerMenuCommand('设置', settings);
 
 function bind_evnet(elem){
   elem.addEventListener('play',  function(e) {
-    // 记录当前的 location，用于判读 iframe
-    GM_setValue("playing_href", location.href);
+    // 记录当前正在播放的 iframe
+    unsafeWindow.____playing = true;
     current_video_elem = e.target;
   });
 }
